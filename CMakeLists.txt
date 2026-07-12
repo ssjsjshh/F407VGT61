@@ -50,26 +50,35 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined library search paths
 )
 
-#基础外设依赖
+#基础BSP外设依赖
 set(BASE_SOURCES
+    Bsp/rtc/bsp_rtc.c
     Bsp/delay/bsp_delay.c
     Bsp/soft_i2c/bsp_i2c.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_atan2_f32.c
 )
-#OLED相关依赖
-set(OLED_SOURCES
+#Service相关依赖
+set(SERVICE_SOURCES
     Service/oled/oled_font.c
     Service/oled/service_oled.c
-    App/oled/app_oled.c
+    Service/mpu/service_mpu.c
 )
-set(RTC_SOURCES
-    Bsp/rtc/bsp_rtc.c
+#Moudle相关依赖
+set(MOUDLE_SOURCES
+    Moudle/mpu/moudle_mpu.c
+    Moudle/oled/moudle_oled.c
+)
+#APP相关依赖
+set(APP_SOURCES
     App/rtc/app_rtc.c
+    App/oled/app_oled.c
+    App/mpu/app_mpu.c
 )
 set(SOURCES
     ${BASE_SOURCES}
-    ${OLED_SOURCES}
-    ${RTC_SOURCES}
+    ${SERVICE_SOURCES}
+    ${MOUDLE_SOURCES}
+    ${APP_SOURCES}
 )
 
 # 2. 根据开关条件追加对应OLED驱动
@@ -97,8 +106,13 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Bsp/soft_i2c
     ${CMAKE_CURRENT_SOURCE_DIR}/Bsp/rtc
     ${CMAKE_CURRENT_SOURCE_DIR}/Service/oled
+    ${CMAKE_CURRENT_SOURCE_DIR}/Service/mpu
+    ${CMAKE_CURRENT_SOURCE_DIR}/Moudle/mpu
+    ${CMAKE_CURRENT_SOURCE_DIR}/Moudle/oled
     ${CMAKE_CURRENT_SOURCE_DIR}/App/oled
     ${CMAKE_CURRENT_SOURCE_DIR}/App/rtc
+    ${CMAKE_CURRENT_SOURCE_DIR}/App/mpu
+
     # Add user defined include paths
 )
 
