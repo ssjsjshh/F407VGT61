@@ -56,14 +56,14 @@ void MX_RTC_Init(void)
   }
 
   /* USER CODE BEGIN Check_RTC_BKUP */
-  if(HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR0)!=0X5A5A)
+  if(HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR0)!=0X5A5B)
   {
   /* USER CODE END Check_RTC_BKUP */
 
   /** Initialize RTC and set the Time and Date
   */
   sTime.Hours = 22;
-  sTime.Minutes = 22;
+  sTime.Minutes = 55;
   sTime.Seconds = 0;
   sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
   sTime.StoreOperation = RTC_STOREOPERATION_SET;

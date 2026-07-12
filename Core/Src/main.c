@@ -31,8 +31,8 @@
 //#include "usart.h"
 //#include "tim.h"
 //#include "gpio.h"
-#include "App_oled.h"
-//#include "rtc.h"
+#include "app_oled.h"
+#include "app_rtc.h"
 //#include "rc522_config.h"
 //#include "mpu6050.h"
 //#include "usmart_config.h"
@@ -109,14 +109,14 @@ int main(void)
   OLED_Init_Frame();
   //RC522_Init();
   //MPU_Init();
-  //Rtc_display();
+  Rtc_display();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    //Rtc_display();
+    Rtc_display();
     //Find_Card_Task();
     //task_list();
     //Usart_Print(&TX1_handle, "VERSION:%x\r\n",RC522_RD_Reg(VersionReg));
