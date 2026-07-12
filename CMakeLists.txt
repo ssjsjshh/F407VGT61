@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.22)
 # and is not re-generated if converter is called multiple times.
 #开关oled显示
 #set(USE_SPI_OLED ON CACHE INTERNAL "")
-set(USE_I2C_OLED ON CACHE INTERNAL "")
+#set(USE_I2C_OLED ON CACHE INTERNAL "")
 # User is free to modify the file as much as necessary
 #
 
@@ -52,22 +52,19 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 
 # 1. 先定义基础源文件
 set(BASE_SOURCES
-    Core/Src/usart.c
-    Core/Src/rtc.c
-    Core/Src/i2c.c
-    Core/Src/spi.c
-    Core/Src/gpio.c
-    Core/Src/tim.c
-    Core/Src/delay.c
-    Core/Src/mpu6050.c
-    Core/Src/oled_api.c
-    Core/Src/oled_font.c
-    Core/Src/usmart.c
-    Core/Src/usmart_config.c
-    Core/Src/rc522.c
-    Core/Src/rc522_config.c
-    Core/Src/esp32.c
+    Bsp/delay/bsp_delay.c
+    Bsp/soft_i2c/bsp_i2c.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_atan2_f32.c
+)
+set(OLED_SOURCES
+    Service/oled/oled_font.c
+    Service/oled/service_oled.c
+    App/oled/App_oled.c
+
+)
+set(SOURCES
+    ${BASE_SOURCES}
+    ${OLED_SOURCES}
 )
 
 # 2. 根据开关条件追加对应OLED驱动
@@ -83,7 +80,7 @@ endif()
 
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-     ${BASE_SOURCES}
+     ${SOURCES}
     # Add user sources here
 )
 
@@ -91,6 +88,10 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/DSP/Include
+    ${CMAKE_CURRENT_SOURCE_DIR}/Bsp/delay
+    ${CMAKE_CURRENT_SOURCE_DIR}/Bsp/soft_i2c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Service/oled
+    ${CMAKE_CURRENT_SOURCE_DIR}/App/oled
     # Add user defined include paths
 )
 
