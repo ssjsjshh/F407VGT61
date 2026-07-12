@@ -1,0 +1,74 @@
+void Test_I2C_Speed(void)
+{
+    uint32_t start_tick, end_tick, diff_tick;
+    uint32_t time_us_x10; // 时间(us) * 10，用于保留一位小数
+    uint32_t scl_freq_khz;
+    uint32_t data_rate_kbs;
+
+    // 确保 DWT 周期计数器已开启 (如果你的 delay.c 已经开启了，这里也不会重复开启)
+    if (!(DWT->CTRL & DWT_CTRL_CYCCNTENA_Msk)) {
+        CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+        DWT->CYCCNT = 0;
+        DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+    }
+
+    // ================= 1. 测试写速度 (发送 100 字节) =================
+    start_tick = DWT->CYCCNT;
+    
+    I2C_Start(&I2C_OLED);
+    for(uint8_t i = 0; i < 100; i++) {
+        I2C_Send_Byte(&I2C_OLED, 0x55); // 发送任意数据
+    }
+    I2C_Stop(&I2C_OLED);
+    
+    end_tick = DWT->CYCCNT;
+    diff_tick = end_tick - start_tick;
+    
+    // 168MHz 主频下，1个 tick = 1/168 us
+    // 避免浮点运算：time_us_x10 = (diff_tick * 10) / 168
+    time_us_x10 = (diff_tick * 10ULL) / 168; 
+    if (time_us_x10 == 0) time_us_x10 = 1; // 防止除零
+
+    // 100字节 * 9 bit(8数据+1ACK) = 900 个 SCL 周期
+    // SCL_Freq_kHz = 900,000 / time_us = (900,000 * 10) / time_us_x10
+    scl_freq_khz = (900000ULL * 10) / time_us_x10;
+    
+    // 有效数据率(KB/s) = (100 bytes / time_us) * 1,000,000 / 1024 ≈ 97656 / time_us
+    data_rate_kbs = (97656ULL * 10) / time_us_x10;
+
+    // 使用 %lu.%lu 拼接出一位小数，完美避开 %f 浮点打印的坑
+    Usart_Print(&TX1_handle, "[Write] SCL: %lu kHz | Rate: %lu KB/s | Time: %lu.%lu us\r\n", 
+                (unsigned long)scl_freq_khz, 
+                (unsigned long)data_rate_kbs, 
+                (unsigned long)(time_us_x10 / 10), 
+                (unsigned long)(time_us_x10 % 10));
+
+    // 延时 100ms，等待 DMA 把环形缓冲区的数据发完，防止和下面的读测试冲突
+    HAL_Delay(100); 
+
+
+    // ================= 2. 测试读速度 (读取 100 字节) =================
+    start_tick = DWT->CYCCNT;
+    
+    I2C_Start(&I2C_OLED);
+    for(uint8_t i = 0; i < 100; i++) {
+        // 前 99 个字节发 ACK(0)，最后一个字节发 NACK(1)
+        I2C_Read_Byte(&I2C_OLED, (i == 99) ? 1 : 0); 
+    }
+    I2C_Stop(&I2C_OLED);
+    
+    end_tick = DWT->CYCCNT;
+    diff_tick = end_tick - start_tick;
+    
+    time_us_x10 = (diff_tick * 10ULL) / 168;
+    if (time_us_x10 == 0) time_us_x10 = 1;
+
+    scl_freq_khz = (900000ULL * 10) / time_us_x10;
+    data_rate_kbs = (97656ULL * 10) / time_us_x10;
+
+    Usart_Print(&TX1_handle, "[Read ] SCL: %lu kHz | Rate: %lu KB/s | Time: %lu.%lu us\r\n", 
+                (unsigned long)scl_freq_khz, 
+                (unsigned long)data_rate_kbs, 
+                (unsigned long)(time_us_x10 / 10), 
+                (unsigned long)(time_us_x10 % 10));
+}

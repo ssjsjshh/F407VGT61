@@ -1,0 +1,56 @@
+//生成烧录文件
+set(ELF_FILE ${CMAKE_PROJECT_NAME}.elf)
+set(BIN_FILE ${CMAKE_PROJECT_NAME}.bin)
+set(HEX_FILE ${CMAKE_PROJECT_NAME}.hex)
+
+# 生成 .elf
+add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${CMAKE_PROJECT_NAME}> ${ELF_FILE}
+    COMMENT "Created ELF file: ${ELF_FILE}"
+)
+
+# 生成 .bin 固件
+add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+    COMMAND arm-none-eabi-objcopy -O binary ${ELF_FILE} ${BIN_FILE}
+    COMMENT "Created BIN firmware: ${BIN_FILE}"
+)
+
+# 生成 .hex 固件
+add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+    COMMAND arm-none-eabi-objcopy -O ihex ${ELF_FILE} ${HEX_FILE}
+    COMMENT "Created HEX firmware: ${HEX_FILE}"
+)
+
+# 输出文件路径提示
+add_custom_target(show_firmware ALL
+    COMMAND ${CMAKE_COMMAND} -E echo "====================================="
+    COMMAND ${CMAKE_COMMAND} -E echo "Output files in build dir:"
+    COMMAND ${CMAKE_COMMAND} -E echo "ELF: ${CMAKE_BINARY_DIR}/${ELF_FILE}"
+    COMMAND ${CMAKE_COMMAND} -E echo "BIN: ${CMAKE_BINARY_DIR}/${BIN_FILE}"
+    COMMAND ${CMAKE_COMMAND} -E echo "HEX: ${CMAKE_BINARY_DIR}/${HEX_FILE}"
+    COMMAND ${CMAKE_COMMAND} -E echo "====================================="
+)
+add_dependencies(show_firmware ${CMAKE_PROJECT_NAME})
+
+#开启fpu浮点运算，不写也行
+target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE
+    -mcpu=cortex-m4
+    -mthumb
+    -mfpu=fpv4-sp-d16
+    -mfloat-abi=hard
+)
+
+target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
+    -mcpu=cortex-m4
+    -mthumb
+    -mfpu=fpv4-sp-d16
+    -mfloat-abi=hard
+)
+
+p /x SCB->CPACR直接查看寄存器
+#检查fpu是否生成成功
+cd build
+cd Debug
+arm-none-eabi-objdump -d F407VGT6.elf | grep -E "vmul|vadd|vldr"
+
+
