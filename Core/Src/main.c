@@ -30,11 +30,10 @@
 #include "bsp_delay.h"
 //#include "usart.h"
 //#include "tim.h"
-//#include "gpio.h"
 #include "app_oled.h"
 #include "app_rtc.h"
 //#include "rc522_config.h"
-//#include "mpu6050.h"
+#include "app_mpu.h"
 //#include "usmart_config.h"
 /* USER CODE END Includes */
 
@@ -107,9 +106,9 @@ int main(void)
   /* USER CODE BEGIN 2 */
   DWT_Init();
   OLED_Init_Frame();
-  //RC522_Init();
-  //MPU_Init();
   Rtc_display();
+  //RC522_Init();
+  MPU_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -117,10 +116,10 @@ int main(void)
   while (1)
   {
     Rtc_display();
+    MPU_Task();
     //Find_Card_Task();
     //task_list();
     //Usart_Print(&TX1_handle, "VERSION:%x\r\n",RC522_RD_Reg(VersionReg));
-    //MPU_Updata();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

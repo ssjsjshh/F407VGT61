@@ -9,4 +9,6 @@ void sys_delay_ms(uint16_t ms);
 void DWT_delay_us(uint32_t us);
 void DWT_delay_ms(uint16_t ms);
 void DWT_delay_ns(uint16_t ns);
+uint32_t DWT_get_tick();
+float DWT_Deltas(uint32_t now, uint32_t last);
 #endif

@@ -1,4 +1,5 @@
 #include "moudle_oled.h"
+#include "oled_priv.h"
 #include "bsp_delay.h"
 #include <string.h>
 /* ---------------------------OLED写单字节命令----------------------------------------------- */

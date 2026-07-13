@@ -52,6 +52,7 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 
 #基础BSP外设依赖
 set(BASE_SOURCES
+    Bsp/exti/bsp_exti.c
     Bsp/rtc/bsp_rtc.c
     Bsp/delay/bsp_delay.c
     Bsp/soft_i2c/bsp_i2c.c
@@ -103,6 +104,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/DSP/Include
     ${CMAKE_CURRENT_SOURCE_DIR}/Bsp/delay
+    ${CMAKE_CURRENT_SOURCE_DIR}/Bsp/exti
     ${CMAKE_CURRENT_SOURCE_DIR}/Bsp/soft_i2c
     ${CMAKE_CURRENT_SOURCE_DIR}/Bsp/rtc
     ${CMAKE_CURRENT_SOURCE_DIR}/Service/oled
