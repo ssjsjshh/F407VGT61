@@ -28,7 +28,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "bsp_delay.h"
-//#include "usart.h"
 //#include "tim.h"
 #include "app_oled.h"
 #include "app_rtc.h"
