@@ -27,8 +27,10 @@ typedef struct
     float       pitch;                      //俯仰角
     float       yaw;                        //偏航角
 }service_show_t;
+/* ---------------------------变量结构体声明----------------------------------------------- */
 extern service_show_t show;
 extern volatile uint8_t show_flag;
+/* ---------------------------统一上层接口----------------------------------------------- */
 extern void MPU_Updata();
 extern void MPU_Service_Init();
 #endif
