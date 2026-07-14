@@ -22,9 +22,9 @@ endif()
 #生成o2
 #set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "" FORCE)
 #生成o3
-set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+#set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
 #生成os
-#set(CMAKE_BUILD_TYPE "MinSizeRel" CACHE STRING "" FORCE)
+set(CMAKE_BUILD_TYPE "MinSizeRel" CACHE STRING "" FORCE)
 
 # Set the project name
 set(CMAKE_PROJECT_NAME F407VGT6)
@@ -58,22 +58,25 @@ set(BASE_SOURCES
     Bsp/soft_i2c/bsp_i2c.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_atan2_f32.c
 )
+#Moudle相关依赖
+set(MOUDLE_SOURCES
+    Moudle/mpu/moudle_mpu.c
+    Moudle/oled/moudle_oled.c
+    Moudle/usart/moudle_usart.c
+)
 #Service相关依赖
 set(SERVICE_SOURCES
     Service/oled/oled_font.c
     Service/oled/service_oled.c
     Service/mpu/service_mpu.c
-)
-#Moudle相关依赖
-set(MOUDLE_SOURCES
-    Moudle/mpu/moudle_mpu.c
-    Moudle/oled/moudle_oled.c
+    Service/usart/service_usart.c
 )
 #APP相关依赖
 set(APP_SOURCES
     App/rtc/app_rtc.c
     App/oled/app_oled.c
     App/mpu/app_mpu.c
+    App/usart/app_usart.c
 )
 set(SOURCES
     ${BASE_SOURCES}
@@ -109,11 +112,14 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Bsp/rtc
     ${CMAKE_CURRENT_SOURCE_DIR}/Service/oled
     ${CMAKE_CURRENT_SOURCE_DIR}/Service/mpu
+    ${CMAKE_CURRENT_SOURCE_DIR}/Service/usart
     ${CMAKE_CURRENT_SOURCE_DIR}/Moudle/mpu
     ${CMAKE_CURRENT_SOURCE_DIR}/Moudle/oled
+    ${CMAKE_CURRENT_SOURCE_DIR}/Moudle/usart
     ${CMAKE_CURRENT_SOURCE_DIR}/App/oled
     ${CMAKE_CURRENT_SOURCE_DIR}/App/rtc
     ${CMAKE_CURRENT_SOURCE_DIR}/App/mpu
+    ${CMAKE_CURRENT_SOURCE_DIR}/App/usart
 
     # Add user defined include paths
 )
