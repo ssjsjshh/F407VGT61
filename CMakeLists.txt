@@ -77,6 +77,7 @@ set(APP_SOURCES
     App/oled/app_oled.c
     App/mpu/app_mpu.c
     App/usart/app_usart.c
+    App/usart/cmd_list.c
 )
 set(SOURCES
     ${BASE_SOURCES}

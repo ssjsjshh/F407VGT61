@@ -1,6 +1,5 @@
 #ifndef __SERVICE_MPU_H
 #define __SERVICE_MPU_H
-#include "stdint.h"
 #include <stdint.h>
 /* ---------------------------原始数据换算系数----------------------------------------------- */
 #define     ACCEL_SCALE     16384.0f        //加速度对应±2g     
@@ -31,6 +30,6 @@ typedef struct
 extern service_show_t show;
 extern volatile uint8_t show_flag;
 /* ---------------------------统一上层接口----------------------------------------------- */
-extern void MPU_Updata();
-extern void MPU_Service_Init();
+extern void mpu_updata();
+extern void mpu_service_init();
 #endif

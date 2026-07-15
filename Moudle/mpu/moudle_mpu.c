@@ -2,95 +2,95 @@
 #include "mpu_priv.h"
 #include "bsp_exti.h"
 #include <stdint.h>
-/* ---------------------------变量结构体初始化----------------------------------------------- */
+/* 变量结构体初始化 */
 moudle_raw_data_t  raw_data={0};
 volatile uint8_t mpu_flag=0;
-/* ---------------------------MPU中断对应回调函数----------------------------------------------- */
-static void MPU_EXTI_HANDLER()
+/* MPU中断对应回调函数 */
+static void mpu_exti_handler()
 {
     mpu_flag=1;
 }
-/* ---------------------------MPU写寄存器----------------------------------------------- */
-uint8_t MPU_WR_REG(uint8_t reg,uint8_t data)
+/* MPU写寄存器 */
+uint8_t mpu_wr_reg(uint8_t reg,uint8_t data)
 {
     uint8_t ack;
-    I2C_Start(&I2C_MPU);
-    ack=I2C_Send_Byte(&I2C_MPU, MPU_WR);
+    i2c_start(&I2C_MPU);
+    ack=i2c_send_byte(&I2C_MPU, MPU_WR);
     if(ack)
     {
-        I2C_Stop(&I2C_MPU);
+        i2c_stop(&I2C_MPU);
         return 0XFF;
     }
-    ack=I2C_Send_Byte(&I2C_MPU, reg);
+    ack=i2c_send_byte(&I2C_MPU, reg);
     if(ack)
     {
-        I2C_Stop(&I2C_MPU);
+        i2c_stop(&I2C_MPU);
         return 0XFF;
     }
-    ack=I2C_Send_Byte(&I2C_MPU, data);
-    I2C_Stop(&I2C_MPU);
+    ack=i2c_send_byte(&I2C_MPU, data);
+    i2c_stop(&I2C_MPU);
     return ack;
 }
-/* ---------------------------MPU读寄存器----------------------------------------------- */
-uint8_t MPU_RD_REG(uint8_t reg)
+/* MPU读寄存器 */
+uint8_t mpu_rd_reg(uint8_t reg)
 {
     uint8_t ack,val;
-    I2C_Start(&I2C_MPU);
-    ack=I2C_Send_Byte(&I2C_MPU, MPU_WR);
+    i2c_start(&I2C_MPU);
+    ack=i2c_send_byte(&I2C_MPU, MPU_WR);
     if(ack)
     {
-        I2C_Stop(&I2C_MPU);
+        i2c_stop(&I2C_MPU);
         return 0XFF;
     }
-    ack=I2C_Send_Byte(&I2C_MPU, reg);
+    ack=i2c_send_byte(&I2C_MPU, reg);
     if(ack)
     {
-        I2C_Stop(&I2C_MPU);
+        i2c_stop(&I2C_MPU);
         return 0XFF;
     }
-    I2C_Start(&I2C_MPU);
-    ack=I2C_Send_Byte(&I2C_MPU, MPU_RD);
+    i2c_start(&I2C_MPU);
+    ack=i2c_send_byte(&I2C_MPU, MPU_RD);
     if(ack)
     {
-        I2C_Stop(&I2C_MPU);
+        i2c_stop(&I2C_MPU);
         return 0XFF;
     }
-    val=I2C_Read_Byte(&I2C_MPU, 1);
-    I2C_Stop(&I2C_MPU);
+    val=i2c_read_byte(&I2C_MPU, 1);
+    i2c_stop(&I2C_MPU);
     return val;
 }
-/* ---------------------------MPU读取全部原始数据----------------------------------------------- */
-void MPU_RD_Raw_Data()
+/* MPU读取全部原始数据 */
+void mpu_rd_raw_data()
 {
     uint8_t buf[14]={0};
     uint8_t ack,i;
-    I2C_Start(&I2C_MPU);
-    ack=I2C_Send_Byte(&I2C_MPU, MPU_WR);
+    i2c_start(&I2C_MPU);
+    ack=i2c_send_byte(&I2C_MPU, MPU_WR);
      if(ack)
     {
-        I2C_Stop(&I2C_MPU);
+        i2c_stop(&I2C_MPU);
         return ;
     }
-    ack=I2C_Send_Byte(&I2C_MPU, ACCEL_XOUT);
+    ack=i2c_send_byte(&I2C_MPU, ACCEL_XOUT);
      if(ack)
     {
-        I2C_Stop(&I2C_MPU);
+        i2c_stop(&I2C_MPU);
         return ;
     }
-    I2C_Start(&I2C_MPU);
-    ack=I2C_Send_Byte(&I2C_MPU, MPU_RD);
+    i2c_start(&I2C_MPU);
+    ack=i2c_send_byte(&I2C_MPU, MPU_RD);
     if(ack)
     {
-        I2C_Stop(&I2C_MPU);
+        i2c_stop(&I2C_MPU);
         return ;
     }
     for (i=0; i<13; i++) 
     {
-        buf[i]=I2C_Read_Byte(&I2C_MPU, 0);
+        buf[i]=i2c_read_byte(&I2C_MPU, 0);
 
     }
-    buf[13]=I2C_Read_Byte(&I2C_MPU, 1);
-    I2C_Stop(&I2C_MPU);
+    buf[13]=i2c_read_byte(&I2C_MPU, 1);
+    i2c_stop(&I2C_MPU);
     //数据对齐存入结构体
     raw_data.ax=(int16_t)(buf[0]<<8|buf[1]);
     raw_data.ay=(int16_t)(buf[2]<<8|buf[3]);
@@ -100,21 +100,21 @@ void MPU_RD_Raw_Data()
     raw_data.gy=(int16_t)(buf[10]<<8|buf[11]);
     raw_data.gz=(int16_t)(buf[12]<<8|buf[13]);
 }
-/* ---------------------------MPU清除中断标志位----------------------------------------------- */
-void MPU_Clear_SATUS()
+/* MPU清除中断标志位 */
+void mpu_clear_satus()
 {
-    MPU_RD_REG(INT_STATUS);
-}/* ---------------------------MPU初始化----------------------------------------------- */
-void MPU_Moudle_Init()
+    mpu_rd_reg(INT_STATUS);
+}/* MPU初始化 */
+void mpu_moudle_init()
 {
-    MPU_WR_REG( PWR_1, 0x00);
-    MPU_WR_REG(SMPLRT_DIV, 0X07);
-    MPU_WR_REG(CONFIG, 0X03);
-    MPU_WR_REG(GYRO_CONFIG, 0X00);
-    MPU_WR_REG(ACCEL_CONFIG, 0X00);
-    MPU_WR_REG(INT_CONFIG, 0X20);
-    MPU_WR_REG(INT_ENABLE, 0X01);
+    mpu_wr_reg( PWR_1, 0x00);
+    mpu_wr_reg(SMPLRT_DIV, 0X07);
+    mpu_wr_reg(CONFIG, 0X03);
+    mpu_wr_reg(GYRO_CONFIG, 0X00);
+    mpu_wr_reg(ACCEL_CONFIG, 0X00);
+    mpu_wr_reg(INT_CONFIG, 0X20);
+    mpu_wr_reg(INT_ENABLE, 0X01);
     //重置中断状态，防卡死
-    MPU_RD_REG(INT_STATUS);
-    bsp_exti_register(MPU_INT_PIN, MPU_EXTI_HANDLER);
+    mpu_rd_reg(INT_STATUS);
+    bsp_exti_register(MPU_INT_PIN, mpu_exti_handler);
 }

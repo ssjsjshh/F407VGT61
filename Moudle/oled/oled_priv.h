@@ -5,5 +5,5 @@
 #define     OLED_ADDR               0X78        //OLED地址
 #define     OLED_WR_ORDER           0X00        //写命令控制字节
 #define     OLED_WR_DAT             0X40        //写数据控制字节
-#define     I2C_OLED                BSP_I2C1    //OLED绑定I2C总线
+#define     I2C_OLED                bsp_i2c1    //OLED绑定I2C总线
 #endif

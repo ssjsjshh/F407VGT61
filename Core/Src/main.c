@@ -106,18 +106,18 @@ int main(void)
   /* USER CODE BEGIN 2 */
   DWT_Init();
   usart_init();
-  OLED_Init_Frame();
-  Rtc_display();
+  oled_init();
+  rtc_display();
   //RC522_Init();
-  MPU_Init();
+  mpu_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    Rtc_display();
-    MPU_Task();
+    rtc_display();
+    mpu_task();
     task_list();
     //Find_Card_Task();
     //task_list();

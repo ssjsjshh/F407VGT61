@@ -28,11 +28,11 @@ typedef struct
     uint16_t        delay_parm;    
 }bsp_i2c_t;
 /* ---------------------------模拟I2C结构体声明----------------------------------------------- */
-extern bsp_i2c_t BSP_I2C1;
-extern bsp_i2c_t BSP_I2C2;
+extern bsp_i2c_t bsp_i2c1;
+extern bsp_i2c_t bsp_i2c2;
 /* ---------------------------统一上层接口----------------------------------------------- */
-void I2C_Start(bsp_i2c_t *I2C);
-void I2C_Stop(bsp_i2c_t *I2C);
-uint8_t I2C_Send_Byte(bsp_i2c_t *I2C,uint8_t byte);
-uint8_t I2C_Read_Byte(bsp_i2c_t *I2C,uint8_t ack_nack);
+void i2c_start(bsp_i2c_t *i2c);
+void i2c_stop(bsp_i2c_t *i2c);
+uint8_t i2c_send_byte(bsp_i2c_t *i2c,uint8_t byte);
+uint8_t i2c_read_byte(bsp_i2c_t *i2c,uint8_t ack_nack);
 #endif
