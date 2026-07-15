@@ -2,20 +2,19 @@
 #include "moudle_mpu.h"
 #include "bsp_delay.h"
 #include "arm_math.h"
-#include <stdint.h>
 /* ---------------------------结构体实例化----------------------------------------------- */
 service_gyroff_t    gyroff={0};
 service_angle_t     angle={0};
 service_show_t      show={0};
 volatile uint8_t show_flag=0;
 /* ---------------------------MPU陀螺仪校准----------------------------------------------- */
-static void MPU_GyroCalibrate(uint16_t sample_num)
+static void mpu_gyrocalibrate(uint16_t sample_num)
 {
     float sum_gx=0,sum_gy=0,sum_gz=0;
     uint16_t i=sample_num;
     while(i--)
     {
-        MPU_RD_Raw_Data();
+        mpu_rd_raw_data();
         sum_gx+=raw_data.gx;
         sum_gy+=raw_data.gy;
         sum_gz+=raw_data.gz;
@@ -25,13 +24,13 @@ static void MPU_GyroCalibrate(uint16_t sample_num)
     gyroff.gy_off=sum_gy/sample_num;
     gyroff.gz_off=sum_gz/sample_num;
 }
-void MPU_Service_Init()
+void mpu_service_init()
 {
-    MPU_Moudle_Init();
-    MPU_GyroCalibrate(200);
+    mpu_moudle_init();
+    mpu_gyrocalibrate(150);
 }
 /* ---------------------------MPU数据姿态解算----------------------------------------------- */
-static void MPU_CompFilter(float dt)
+static void mpu_compfilter(float dt)
 {
     float ax,ay,az;
     float gx,gy,gz;
@@ -54,7 +53,7 @@ static void MPU_CompFilter(float dt)
     angle.pitch = alpha * (angle.pitch + gy * dt) + (1-alpha)*acc_pitch;
     angle.yaw  += gz * dt;
 }
-void MPU_Updata()
+void mpu_updata()
 {
     static float roll_sum=0.0f;
     static float pitch_sum=0.0f;
@@ -67,9 +66,9 @@ void MPU_Updata()
         uint32_t now_tick=DWT_get_tick();
         dt=DWT_Deltas(now_tick, last_tick);
         last_tick=now_tick;
-        MPU_RD_Raw_Data();
-        MPU_CompFilter(dt);
-        MPU_Clear_SATUS();
+        mpu_rd_raw_data();
+        mpu_compfilter(dt);
+        mpu_clear_satus();
         roll_sum += angle.rol;
         pitch_sum += angle.pitch;
         cnt++;

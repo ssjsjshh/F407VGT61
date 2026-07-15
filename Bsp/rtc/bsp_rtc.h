@@ -7,5 +7,5 @@ extern volatile uint8_t rtc_flag;
 extern RTC_TimeTypeDef stime;
 extern RTC_DateTypeDef sdate;
 /* ---------------------------统一上层接口----------------------------------------------- */
-void Rtc_read();
+void rtc_read();
 #endif

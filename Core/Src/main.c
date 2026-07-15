@@ -28,6 +28,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "bsp_delay.h"
+#include "app_usart.h"
 //#include "tim.h"
 #include "app_oled.h"
 #include "app_rtc.h"
@@ -104,18 +105,20 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
   DWT_Init();
-  OLED_Init_Frame();
-  Rtc_display();
+  usart_init();
+  oled_init();
+  rtc_display();
   //RC522_Init();
-  MPU_Init();
+  mpu_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    Rtc_display();
-    MPU_Task();
+    rtc_display();
+    mpu_task();
+    task_list();
     //Find_Card_Task();
     //task_list();
     //Usart_Print(&TX1_handle, "VERSION:%x\r\n",RC522_RD_Reg(VersionReg));
